@@ -1,11 +1,7 @@
-"""
-cli.py
-
-Command-line interface for the document scanner + OCR pipeline.
-
-Example:
-    python main.py --input photo.jpg --output scanned.jpg --text-output out.txt
-"""
+# cli.py - argument parsing + glues the other modules together
+#
+# example:
+#   python main.py --input photo.jpg --output scanned.jpg --text-output out.txt
 
 import argparse
 import os
@@ -18,42 +14,32 @@ from .preprocessing import enhance_for_ocr, load_image
 from .transform import scan_document
 
 
-def build_parser() -> argparse.ArgumentParser:
+def build_parser():
     parser = argparse.ArgumentParser(
         prog="doc-scanner-ocr",
         description="Detect a document in a photo, flatten it into a "
         "top-down scan, and (optionally) OCR the text out of it.",
     )
+    parser.add_argument("--input", "-i", required=True, help="Path to the input photo.")
     parser.add_argument(
-        "--input", "-i", required=True, help="Path to the input photo."
-    )
-    parser.add_argument(
-        "--output",
-        "-o",
-        default="scanned_output.jpg",
+        "--output", "-o", default="scanned_output.jpg",
         help="Path to save the flattened/scanned image (default: %(default)s).",
     )
     parser.add_argument(
-        "--text-output",
-        "-t",
-        default=None,
+        "--text-output", "-t", default=None,
         help="Path to save the extracted OCR text. If omitted, text is "
         "printed to stdout instead of being written to a file.",
     )
     parser.add_argument(
-        "--no-ocr",
-        action="store_true",
+        "--no-ocr", action="store_true",
         help="Skip OCR entirely; only produce the scanned/flattened image.",
     )
     parser.add_argument(
-        "--lang",
-        default="eng",
+        "--lang", default="eng",
         help="Tesseract language code to use for OCR (default: %(default)s).",
     )
     parser.add_argument(
-        "--resize-height",
-        type=int,
-        default=800,
+        "--resize-height", type=int, default=800,
         help="Height (px) the image is downscaled to for edge/contour "
         "detection. Lower = faster, higher = more accurate on noisy "
         "photos (default: %(default)s).",
@@ -61,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv=None) -> int:
+def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
 

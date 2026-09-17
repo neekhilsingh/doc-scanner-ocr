@@ -1,33 +1,26 @@
-"""
-preprocessing.py
-
-Low-level image utilities used before we try to find the document's
-edges. Keeping these as small, single-purpose functions makes the
-pipeline in transform.py easy to read and easy to unit test.
-"""
+# preprocessing.py
+# basic image ops used before we try to find the doc edges.
+# kept separate from transform.py so I could test that file on its own.
 
 import cv2
 import numpy as np
 
 
-def load_image(path: str) -> np.ndarray:
-    """Load an image from disk as a BGR numpy array.
-
-    Raises FileNotFoundError if the path doesn't exist or OpenCV
-    couldn't decode it (corrupt file / unsupported format).
-    """
+def load_image(path):
+    # cv2.imread doesn't throw on a bad path, it just returns None,
+    # which is annoying to debug later so catch it here instead
     image = cv2.imread(path)
     if image is None:
         raise FileNotFoundError(f"Could not read image at '{path}'")
     return image
 
 
-def resize_image(image: np.ndarray, height: int = 800):
-    """Resize an image to a fixed height, keeping aspect ratio.
-
-    Returns (resized_image, scale_ratio). The scale_ratio lets us map
-    coordinates found on the small (fast-to-process) image back onto
-    the full-resolution original.
+def resize_image(image, height=800):
+    """
+    Shrinks the image down to a fixed height before we run edge/contour
+    detection - just for speed, doesn't affect final output quality since
+    the actual crop happens on the full res image later.
+    returns (resized, ratio) so we can scale corner coords back up after.
     """
     h, w = image.shape[:2]
     ratio = height / float(h)
@@ -35,30 +28,29 @@ def resize_image(image: np.ndarray, height: int = 800):
     return resized, ratio
 
 
-def to_grayscale(image: np.ndarray) -> np.ndarray:
+def to_grayscale(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 
-def blur_image(image: np.ndarray, ksize=(5, 5)) -> np.ndarray:
-    """Gaussian blur to suppress noise/texture that would otherwise
-    confuse the edge detector (paper grain, table texture, etc.)."""
+def blur_image(image, ksize=(5, 5)):
+    # smooths out paper texture / table grain so Canny doesn't pick it up
+    # as edges. 5x5 was enough for my test images, might need tweaking
+    # for really noisy photos
     return cv2.GaussianBlur(image, ksize, 0)
 
 
-def detect_edges(image: np.ndarray, low: int = 75, high: int = 200) -> np.ndarray:
-    """Canny edge detector. `low`/`high` are the hysteresis thresholds;
-    the defaults work reasonably well for a document photographed on
-    a contrasting background under normal indoor lighting."""
+def detect_edges(image, low=75, high=200):
+    # these threshold numbers are just what worked ok on my test photos,
+    # nothing scientific about 75/200 specifically
     return cv2.Canny(image, low, high)
 
 
-def enhance_for_ocr(warped_gray: np.ndarray) -> np.ndarray:
-    """Turn a flattened, grayscale document scan into a crisp black-
-    on-white image, which Tesseract reads far more reliably than a
-    raw photo (uneven lighting, shadows, slight blur, etc.).
+def enhance_for_ocr(warped_gray):
+    """Cleans up the flattened scan before handing it to Tesseract.
+    Global threshold looked bad on anything with uneven lighting so
+    went with adaptive instead - blockSize/C below were picked by trial
+    and error, feel free to retune if results look off on your images.
     """
-    # Adaptive threshold handles uneven lighting across the page
-    # better than a single global threshold would.
     thresh = cv2.adaptiveThreshold(
         warped_gray,
         255,
@@ -67,6 +59,5 @@ def enhance_for_ocr(warped_gray: np.ndarray) -> np.ndarray:
         blockSize=25,
         C=15,
     )
-    # A tiny median blur cleans up salt-and-pepper speckle left over
-    # from thresholding without softening the text edges much.
+    # median blur cleans up the speckle threshold tends to leave behind
     return cv2.medianBlur(thresh, 3)
