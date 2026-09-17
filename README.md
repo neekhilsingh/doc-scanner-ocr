@@ -1,4 +1,4 @@
-````markdown
+
 # Document Scanner + OCR
 
 **Author:** Neekhil Kumar Singh
