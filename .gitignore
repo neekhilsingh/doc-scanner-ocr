@@ -8,3 +8,5 @@ env/
 scanned_output.jpg
 *.txt.out
 .DS_Store
+
+extracted.txt
