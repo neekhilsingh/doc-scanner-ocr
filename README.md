@@ -385,5 +385,3 @@ VIT Bhopal University
 
 **Registration No.:** 24BAI10907
 
-```
-```
