@@ -1,24 +1,37 @@
-
 # Document Scanner + OCR
 
 **Author:** Neekhil Kumar Singh  
 **Registration No.:** 24BAI10907
 
-A Python-based document scanner that takes a photo of a document, finds the document area, corrects the perspective, improves the image, and extracts the text using Tesseract OCR.
+This is a Python-based document scanner and OCR project built using OpenCV and Tesseract.
 
-The main idea behind this project is to turn a normal document photo, especially one taken from an angle, into a cleaner scanned version and then extract its text.
+The project takes a photo of a document, detects the document area, corrects the perspective, improves the image, and extracts the text from it using OCR.
+
+The main purpose of this project was to understand how a basic document scanner works using computer vision techniques.
+
+---
 
 ## Project Structure
 
 ```text
 doc-scanner-ocr/
 │
+├── docs/
+│   └── diagrams/
+│       ├── architecture_diagram.png
+│       ├── component_diagram.png
+│       ├── sequence_diagram.png
+│       ├── use_case_diagram.png
+│       └── workflow_diagram.png
+│
 ├── sample_images/
-│   └── .gitkeep
+│   ├── .gitkeep
+│   └── document.jpg
 │
 ├── scanner/
 │   ├── __init__.py
 │   ├── cli.py
+│   ├── main.py
 │   ├── ocr.py
 │   ├── preprocessing.py
 │   └── transform.py
@@ -28,32 +41,40 @@ doc-scanner-ocr/
 │
 ├── .gitignore
 ├── LICENSE
-├── main.py
 ├── README.md
-└── requirements.txt
-````
+├── main.py
+├── requirements.txt
+└── statement.md
+```
 
 ### Main Files
 
-* `preprocessing.py` — prepares the image using resizing, grayscale conversion, Gaussian blur, and edge detection.
-* `transform.py` — finds the document boundary, identifies its four corners, and corrects the perspective.
-* `ocr.py` — runs OCR using Tesseract.
-* `cli.py` — handles command-line arguments and connects the different parts of the pipeline.
-* `test_transform.py` — contains basic tests for the transformation functions.
+- `main.py` — entry point for running the project.
+- `scanner/preprocessing.py` — handles image loading, resizing, grayscale conversion, blurring, and edge detection.
+- `scanner/transform.py` — detects the document contour, finds the four corners, and performs perspective correction.
+- `scanner/ocr.py` — handles text extraction using Tesseract OCR.
+- `scanner/cli.py` — handles command-line arguments.
+- `scanner/main.py` — contains the main scanning pipeline.
+- `tests/test_transform.py` — contains basic tests for the transformation functions.
+- `sample_images/` — contains sample images used for testing.
+- `docs/diagrams/` — contains the project diagrams.
+- `statement.md` — contains the project statement.
 
 ---
 
 ## Features
 
-* Detects the document boundary
-* Finds the four corners of the document
-* Corrects perspective
-* Enhances the scanned image
-* Extracts text using Tesseract OCR
-* Supports different OCR languages
-* Option to skip OCR
-* Saves extracted text to a file
-* Includes basic unit tests
+- Detects the document boundary from an image
+- Finds the four corners of the document
+- Corrects the perspective
+- Creates a cleaner scanned version of the document
+- Enhances the image before OCR
+- Extracts text using Tesseract OCR
+- Supports different OCR languages
+- Option to skip OCR
+- Can save extracted text to a file
+- Includes basic unit tests
+- Includes project diagrams
 
 ---
 
@@ -61,12 +82,12 @@ doc-scanner-ocr/
 
 The project requires:
 
-* Python 3.9+
-* OpenCV
-* NumPy
-* pytesseract
-* pytest
-* Tesseract OCR
+- Python 3.9+
+- OpenCV
+- NumPy
+- pytesseract
+- pytest
+- Tesseract OCR
 
 Install the Python dependencies using:
 
@@ -82,18 +103,20 @@ pip install -r requirements.txt
 
 Install Tesseract from:
 
-[https://github.com/UB-Mannheim/tesseract/wiki](https://github.com/UB-Mannheim/tesseract/wiki)
+https://github.com/UB-Mannheim/tesseract/wiki
 
-A common installation location is:
+A common installation path is:
 
 ```text
 C:\Program Files\Tesseract-OCR\tesseract.exe
 ```
 
-If Tesseract is not added to the system `PATH`, its location can be specified in Python:
+If Tesseract is installed somewhere else, update the path in `scanner/ocr.py`.
 
-```python
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+Check the installation using:
+
+```bash
+tesseract --version
 ```
 
 ### macOS
@@ -107,12 +130,6 @@ brew install tesseract
 ```bash
 sudo apt-get update
 sudo apt-get install tesseract-ocr
-```
-
-To check whether Tesseract is installed correctly:
-
-```bash
-tesseract --version
 ```
 
 ---
@@ -142,7 +159,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-Install the required Python packages:
+Install the required packages:
 
 ```bash
 pip install -r requirements.txt
@@ -152,42 +169,59 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Scan a Document
+Place a document image inside the `sample_images` folder.
 
-Place your document image inside the `sample_images` folder and run:
+For example:
+
+```text
+sample_images/
+└── document.jpg
+```
+
+Run the scanner using:
 
 ```bash
 python main.py --input sample_images/document.jpg --output scanned_output.jpg
 ```
 
-The program will detect the document, correct its perspective, save the processed image, and then run OCR.
+The program will process the image, correct the perspective if a suitable document boundary is found, and save the processed image.
 
 The extracted text is printed in the terminal.
 
-### Save the OCR Result
+---
 
-To also save the extracted text:
+## Save OCR Text
+
+To save the extracted text into a file:
 
 ```bash
 python main.py --input sample_images/document.jpg --output scanned_output.jpg --text-output extracted.txt
 ```
 
-This creates:
+This produces:
 
 ```text
 scanned_output.jpg
 extracted.txt
 ```
 
-### Skip OCR
+Both files are generated outputs and are ignored by Git.
 
-If you only want the scanned/processed image:
+---
+
+## Skip OCR
+
+If you only want the processed document image:
 
 ```bash
 python main.py --input sample_images/document.jpg --output scanned_output.jpg --no-ocr
 ```
 
-### Use Another OCR Language
+---
+
+## Use Another OCR Language
+
+You can specify another Tesseract language using the `--lang` option.
 
 For example:
 
@@ -195,28 +229,32 @@ For example:
 python main.py --input sample_images/document.jpg --output scanned_output.jpg --lang fra
 ```
 
-The required Tesseract language data must be installed before using a different language.
+The required Tesseract language data must be installed for the selected language.
 
-### View Available Options
+---
+
+## Command-Line Options
+
+To see all available options:
 
 ```bash
 python main.py --help
 ```
 
-| Option                | Description                            |
-| --------------------- | -------------------------------------- |
-| `--input`, `-i`       | Path to the input image                |
-| `--output`, `-o`      | Path for the scanned output image      |
-| `--text-output`, `-t` | Path for the extracted text file       |
-| `--no-ocr`            | Skip the OCR step                      |
-| `--lang`              | Tesseract language code                |
-| `--resize-height`     | Height used while processing the image |
+| Option | Description |
+|---|---|
+| `--input`, `-i` | Path to the input document image |
+| `--output`, `-o` | Path where the scanned image will be saved |
+| `--text-output`, `-t` | Path where extracted text will be saved |
+| `--no-ocr` | Skip the OCR step |
+| `--lang` | Tesseract language code |
+| `--resize-height` | Height used during image processing |
 
 ---
 
 ## How It Works
 
-The complete pipeline is:
+The scanner follows these steps:
 
 ```text
 Input Image
@@ -244,21 +282,23 @@ Extracted Text
 
 ### 1. Image Preprocessing
 
-The input image is resized first to make processing faster. It is then converted to grayscale and blurred using Gaussian blur.
+The input image is resized first to make processing faster.
 
-After that, Canny edge detection is used to identify strong edges in the image. These edges help in finding the document boundary.
+It is then converted to grayscale and blurred using Gaussian blur.
 
-This part is handled by:
+Canny edge detection is applied to find strong edges in the image. These edges help in locating the boundaries of the document.
+
+This part is mainly handled in:
 
 ```text
 scanner/preprocessing.py
 ```
 
-### 2. Finding the Document
+### 2. Document Detection
 
-The program looks for contours in the edge image.
+After detecting the edges, the program searches for contours.
 
-It checks the contours to find a suitable four-sided contour. Once found, the four points are treated as the corners of the document.
+The contours are checked to find a suitable four-sided contour. If one is found, its four points are used as the corners of the document.
 
 This is mainly handled in:
 
@@ -268,7 +308,9 @@ scanner/transform.py
 
 ### 3. Perspective Correction
 
-When a document is photographed from an angle, its shape can look distorted:
+When a document is photographed from an angle, it can look distorted.
+
+For example:
 
 ```text
        __________
@@ -277,33 +319,51 @@ When a document is photographed from an angle, its shape can look distorted:
     /_________/
 ```
 
-The perspective transformation changes it into a more rectangular view:
+Perspective transformation changes it into a more rectangular view:
 
 ```text
-    _____________
-   |             |
-   |  DOCUMENT   |
-   |             |
-   |_____________|
+    ______________
+   |              |
+   |   DOCUMENT   |
+   |              |
+   |______________|
 ```
 
 OpenCV's perspective transformation is used for this step.
 
-The original full-resolution image is used for the final transformation to avoid unnecessary loss of detail.
-
-If a suitable four-corner contour cannot be found, the program keeps the original image instead of applying perspective correction.
+If a suitable document contour cannot be found, the program keeps the original image instead of applying the transformation.
 
 ### 4. Image Enhancement
 
-The corrected document is converted to grayscale and processed using adaptive thresholding and median filtering.
+After perspective correction, the document image is converted to grayscale.
 
-This helps improve the appearance of the text before sending the image to OCR.
+Adaptive thresholding and median filtering are then used to improve the image before OCR.
+
+The purpose is to make the text clearer and easier for Tesseract to recognize.
 
 ### 5. OCR
 
 The processed image is passed to Tesseract through `pytesseract`.
 
-The extracted text can be displayed directly in the terminal or saved to a text file.
+The extracted text can either be displayed in the terminal or saved to `extracted.txt`.
+
+---
+
+## Project Diagrams
+
+The project contains diagrams that describe different parts of the system:
+
+- Architecture Diagram
+- Component Diagram
+- Sequence Diagram
+- Use Case Diagram
+- Workflow Diagram
+
+They are available in:
+
+```text
+docs/diagrams/
+```
 
 ---
 
@@ -321,17 +381,17 @@ python -m pytest tests/
 
 ## Limitations
 
-The current version works best when the document has a reasonably clear boundary.
+The current version works best when the document has a clear boundary.
 
 It may have difficulty with:
 
-* Low contrast between the document and background
-* Cluttered backgrounds
-* Poor lighting
-* Blurry images
-* Folded or curved documents
-* Documents without clear rectangular boundaries
-* Handwritten text
+- Poor lighting
+- Blurry images
+- Low contrast between the document and background
+- Very cluttered backgrounds
+- Folded or curved documents
+- Documents without clear rectangular boundaries
+- Handwritten text
 
 OCR accuracy also depends on the quality of the input image and the Tesseract language being used.
 
@@ -339,32 +399,50 @@ If a suitable document contour is not found, the program falls back to the origi
 
 ---
 
+## What I Learned
+
+While working on this project, I got practical experience with:
+
+- Image preprocessing using OpenCV
+- Grayscale conversion and Gaussian blur
+- Canny edge detection
+- Contour detection
+- Finding document corners
+- Perspective transformation
+- Image thresholding
+- Tesseract OCR
+- Building a command-line Python application
+- Writing basic unit tests
+- Organizing a Python project into separate modules
+
+---
+
 ## Future Improvements
 
-Some improvements that could be added in the future:
+Some improvements I would like to add in the future:
 
-* Real-time scanning using a webcam
-* Better corner detection
-* Automatic document rotation
-* Detection of multiple documents in one image
-* Additional OCR preprocessing techniques
-* OCR confidence scores
-* Automatic language detection
-* Better support for handwritten text
-* PDF output
-* Streamlit-based interface
-* Automatic background removal
+- Better document and corner detection
+- Automatic document rotation
+- Webcam-based scanning
+- Detection of multiple documents
+- More OCR preprocessing techniques
+- OCR confidence scores
+- Automatic language detection
+- Better support for handwritten documents
+- PDF generation
+- Streamlit-based interface
+- Automatic background removal
 
 ---
 
 ## Technologies Used
 
-* Python
-* OpenCV
-* NumPy
-* Tesseract OCR
-* pytesseract
-* pytest
+- Python
+- OpenCV
+- NumPy
+- Tesseract OCR
+- pytesseract
+- pytest
 
 ---
 
@@ -380,8 +458,7 @@ See the `LICENSE` file for more information.
 
 **Neekhil Kumar Singh**
 
-B.Tech CSE (AI & ML)
+B.Tech CSE (AI & ML)  
 VIT Bhopal University
 
 **Registration No.:** 24BAI10907
-
