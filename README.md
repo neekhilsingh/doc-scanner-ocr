@@ -1,6 +1,10 @@
 # Document Scanner + OCR
 
+<<<<<<< HEAD
 **Author:** Neekhil Kumar Singh  
+=======
+**Author:** Neekhil Kumar Singh
+>>>>>>> d026a76 (Add project documentation)
 **Registration No.:** 24BAI10907
 
 A Python-based document scanner that takes an image of a document, detects its boundaries, corrects the perspective, improves the image, and extracts the text using Tesseract OCR.
@@ -31,6 +35,10 @@ doc-scanner-ocr/
 ├── README.md
 └── requirements.txt
 ```
+<<<<<<< HEAD
+=======
+
+>>>>>>> d026a76 (Add project documentation)
 ### Main files
 
 * `preprocessing.py` — handles image loading, resizing, grayscale conversion, blurring and edge detection.
@@ -78,7 +86,13 @@ pip install -r requirements.txt
 
 ### Windows
 
+<<<<<<< HEAD
 Install Tesseract and make sure its installation directory is added to the system `PATH`.
+=======
+Install Tesseract from:
+
+[https://github.com/UB-Mannheim/tesseract/wiki](https://github.com/UB-Mannheim/tesseract/wiki)
+>>>>>>> d026a76 (Add project documentation)
 
 A common installation location is:
 
@@ -150,8 +164,15 @@ pip install -r requirements.txt
 
 ### Scan a document
 
+<<<<<<< HEAD
 ```bash
 python main.py --input path/to/document.jpg --output scanned_output.jpg
+=======
+Put your document image inside the `sample_images` folder and run:
+
+```bash
+python main.py --input sample_images/document.jpg --output scanned_output.jpg
+>>>>>>> d026a76 (Add project documentation)
 ```
 
 The program detects the document, corrects its perspective, saves the processed image and then performs OCR.
@@ -163,7 +184,11 @@ The extracted text is printed in the terminal.
 To save the extracted text to a file:
 
 ```bash
+<<<<<<< HEAD
 python main.py --input path/to/document.jpg --output scanned_output.jpg --text-output extracted.txt
+=======
+python main.py --input sample_images/document.jpg --output scanned_output.jpg --text-output extracted.txt
+>>>>>>> d026a76 (Add project documentation)
 ```
 
 This creates:
@@ -178,7 +203,11 @@ extracted.txt
 If you only want the processed/scanned image:
 
 ```bash
+<<<<<<< HEAD
 python main.py --input path/to/document.jpg --output scanned_output.jpg --no-ocr
+=======
+python main.py --input sample_images/document.jpg --output scanned_output.jpg --no-ocr
+>>>>>>> d026a76 (Add project documentation)
 ```
 
 ### Use another OCR language
@@ -186,7 +215,11 @@ python main.py --input path/to/document.jpg --output scanned_output.jpg --no-ocr
 For example:
 
 ```bash
+<<<<<<< HEAD
 python main.py --input path/to/document.jpg --output scanned_output.jpg --lang fra
+=======
+python main.py --input sample_images/document.jpg --output scanned_output.jpg --lang fra
+>>>>>>> d026a76 (Add project documentation)
 ```
 
 The required Tesseract language data must be installed for the selected language.
